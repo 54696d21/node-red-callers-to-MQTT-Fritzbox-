@@ -1,0 +1,162 @@
+[
+    {
+        "id": "c0f5fc1a.3b0a2",
+        "type": "fritzbox-callmonitor",
+        "z": "2167974a.780808",
+        "device": "5ccc0382.5acc0c",
+        "name": "",
+        "topic": "",
+        "x": 133.0088653564453,
+        "y": 506.01710414886475,
+        "wires": [
+            [
+                "90f60e05.bfe82"
+            ]
+        ]
+    },
+    {
+        "id": "90f60e05.bfe82",
+        "type": "function",
+        "z": "2167974a.780808",
+        "name": "filter for \"INBOUND\"",
+        "func": "if (msg.payload.type == 'INBOUND') {\n   return msg;\n}\n/*else{\n    msg.topic = 'fail';\n    return msg;\n}\n*/",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 364.93956756591797,
+        "y": 507.3515501022339,
+        "wires": [
+            [
+                "cda96986.c111c8",
+                "43a2dae3.591094"
+            ]
+        ]
+    },
+    {
+        "id": "cda96986.c111c8",
+        "type": "function",
+        "z": "2167974a.780808",
+        "name": "payload=calling_number",
+        "func": "msg.payload=msg.payload.caller\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 623.9363670349121,
+        "y": 474.3546485900879,
+        "wires": [
+            [
+                "cdebaed4.2674"
+            ]
+        ]
+    },
+    {
+        "id": "6cfa1d42.da64a4",
+        "type": "fritzbox-contact",
+        "z": "2167974a.780808",
+        "device": "5ccc0382.5acc0c",
+        "name": "",
+        "topic": "",
+        "phonebook": "Telefonbuch",
+        "ccode": "DE",
+        "x": 1017.3584671020508,
+        "y": 529.2542705535889,
+        "wires": [
+            [
+                "301a5a3e.a893f6"
+            ]
+        ]
+    },
+    {
+        "id": "43a2dae3.591094",
+        "type": "function",
+        "z": "2167974a.780808",
+        "name": "payload=calling_number_for_lookup_in_phonebook",
+        "func": "msg.payload=msg.payload.caller;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 682.2674255371094,
+        "y": 530.0334568023682,
+        "wires": [
+            [
+                "6cfa1d42.da64a4"
+            ]
+        ]
+    },
+    {
+        "id": "301a5a3e.a893f6",
+        "type": "function",
+        "z": "2167974a.780808",
+        "name": "payload=name_from_phonebook",
+        "func": "msg.payload=msg.payload[0].person.realName;\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1320.1244888305664,
+        "y": 528.0332369804382,
+        "wires": [
+            [
+                "cdebaed4.2674"
+            ]
+        ]
+    },
+    {
+        "id": "cdebaed4.2674",
+        "type": "join",
+        "z": "2167974a.780808",
+        "name": "",
+        "mode": "custom",
+        "build": "array",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "2",
+        "count": "2",
+        "x": 1576.1382598876953,
+        "y": 481.2067623138428,
+        "wires": [
+            [
+                "b23b7b7f.1c8a08"
+            ]
+        ]
+    },
+    {
+        "id": "b23b7b7f.1c8a08",
+        "type": "mqtt out",
+        "z": "2167974a.780808",
+        "name": "",
+        "topic": "Inbound_final",
+        "qos": "0",
+        "retain": "",
+        "broker": "978471b7.f6893",
+        "x": 1791.0087432861328,
+        "y": 480.9401626586914,
+        "wires": []
+    },
+    {
+        "id": "5ccc0382.5acc0c",
+        "type": "fritzbox-config",
+        "z": "",
+        "name": "Fritzbox 7490",
+        "host": "fritz.box",
+        "port": "49000",
+        "ssl": false
+    },
+    {
+        "id": "978471b7.f6893",
+        "type": "mqtt-broker",
+        "z": "",
+        "broker": "10.183.53.39",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": ""
+    }
+]
